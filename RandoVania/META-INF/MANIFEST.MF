@@ -1,0 +1,8 @@
+Manifest-Version: null
+Ant-Version: Apache Ant 1.7.0
+Created-By: 1.5.0_11-b03 (Sun Microsystems Inc.)
+Main-Class: zenonia.Main
+Implementation-Version: 5 Build 0286
+Built-By: Administrator
+Built-Date: Mon Mar 08 14:19:13 PST 2010
+
