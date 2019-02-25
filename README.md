@@ -1,2 +1,2 @@
 # RandoVania
-Video Game, Sidescroller Metroidvania style
+Testing out OpenGL through LibGDX on a sidescroller 2D game.
