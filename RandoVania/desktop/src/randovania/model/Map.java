@@ -1,7 +1,9 @@
 package randovania.model;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import randovania.control.GameController;
 
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ public class Map {
 
     public void paintComponent(SpriteBatch batch, int x, int y) {
         batch.draw(mapTexture, 0, 0, 0, 0, mapTexture.getWidth(), mapTexture.getHeight());
+
         drawWalls(batch);
     }
 
@@ -37,8 +40,6 @@ public class Map {
     }
 
     public void createTextures() {
-//        mapTexture = new Texture("map.png");
-//        mapTexture = new Texture("map_sotn.jpg");
         mapTexture = new Texture("map_sotn_cutdown.jpg");
         MAP_MAX_Y = mapTexture.getHeight();
         MAP_MAX_X = mapTexture.getWidth();
@@ -48,6 +49,7 @@ public class Map {
 //        walls.add(new Wall(190, 11, 614, 39));
 //        walls.add(new Wall(765, 99, 140, 42));
 //        walls.add(new Wall(871, 24, 34, 117));
+
         //Walls ouside of map area
         walls.add(new Wall(-29, 0, 30, MAP_MAX_Y));
         walls.add(new Wall(MAP_MAX_X-1, 0, 30, MAP_MAX_Y));

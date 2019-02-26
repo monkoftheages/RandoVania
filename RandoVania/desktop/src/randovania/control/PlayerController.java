@@ -1,6 +1,5 @@
 package randovania.control;
 
-import com.badlogic.gdx.math.Rectangle;
 import randovania.model.Player;
 import randovania.model.Viewport;
 import randovania.model.Wall;
@@ -23,6 +22,7 @@ public class PlayerController {
 
     protected boolean contactingGround = true;
 
+    protected static float STAIR_HEIGHT_ALLOWED = 10;
     protected static final int WALK_SPEED = 200;
     //    protected static final int WALK_SPEED = 1000;
     protected static final int JUMP_SPEED = 400;
@@ -200,12 +200,13 @@ public class PlayerController {
         player.getBoundingBox().setX(player.getBoundingBox().getX() - distX);
         float playerEdge = 0;
         float wallEdge = 0;
+        float wallTop = 0;
         switch (direction) {
             case MOVING_DOWN:
                 contactingGround = true;
                 playerEdge = player.getBoundingBox().getY();
                 wallEdge = collidedWall.getBoundingBox().getY() + collidedWall.getBoundingBox().getHeight();
-                moveY = wallEdge - playerEdge;
+                moveY = wallEdge - playerEdge + Utilities.EQUALITY_THRESHOLD_SMALL;
                 break;
             case MOVING_UP:
                 //Moving up, cancel jump when colliding with a ceiling
@@ -215,33 +216,62 @@ public class PlayerController {
                 }
                 playerEdge = player.getBoundingBox().getY() + player.getBoundingBox().getHeight();
                 wallEdge = collidedWall.getBoundingBox().getY();
-                moveY = wallEdge - playerEdge;
+                moveY = wallEdge - playerEdge - Utilities.EQUALITY_THRESHOLD_SMALL;
                 break;
             case MOVING_LEFT:
+                //Check for stairs
+                wallTop = collidedWall.getBoundingBox().getY() + collidedWall.getBoundingBox().getHeight();
+                if (wallTop - player.getBoundingBox().getY() < STAIR_HEIGHT_ALLOWED) {
+                    moveX = distX;
+                    moveY = wallTop - player.getBoundingBox().getY() + Utilities.EQUALITY_THRESHOLD_SMALL;
+                    return movePlayer(moveX, moveY, direction);
+                }
+                //End check for stairs
                 playerEdge = player.getBoundingBox().getX();
                 wallEdge = collidedWall.getBoundingBox().getX() + collidedWall.getBoundingBox().getWidth();
-                moveX = wallEdge - playerEdge;
+                moveX = wallEdge - playerEdge + Utilities.EQUALITY_THRESHOLD_SMALL;
                 break;
             case MOVING_RIGHT:
+                //Check for stairs
+                wallTop = collidedWall.getBoundingBox().getY() + collidedWall.getBoundingBox().getHeight();
+                if (wallTop - player.getBoundingBox().getY() < STAIR_HEIGHT_ALLOWED) {
+                    moveX = distX;
+                    moveY = wallTop - player.getBoundingBox().getY() + Utilities.EQUALITY_THRESHOLD_SMALL;
+                    return movePlayer(moveX, moveY, direction);
+                }
+                //End check for stairs
                 playerEdge = player.getBoundingBox().getX() + player.getBoundingBox().getWidth();
                 wallEdge = collidedWall.getBoundingBox().getX();
-                moveX = wallEdge - playerEdge;
+                moveX = wallEdge - playerEdge - Utilities.EQUALITY_THRESHOLD_SMALL;
                 break;
 
         }
         if (!player.getBoundingBox().overlaps(collidedWall.getBoundingBox()) && Utilities.almostEqual(playerEdge, wallEdge))
             return false;
-        //If there is still a collision, stop loop
+        //Debug for incorrect collision
+//        if(!debugCollision(player, collidedWall, direction, moveX, moveY)) return false;
+        return movePlayer(moveX, moveY, direction);
+    }
+
+
+    protected boolean debugCollision(Player player, Wall collidedWall, int direction, float moveX, float moveY) {
+//        //If there is still a collision, stop loop
         player.getBoundingBox().setY(player.getBoundingBox().getY() + moveY);
         player.getBoundingBox().setX(player.getBoundingBox().getX() + moveX);
         boolean stillHasCollision = player.getBoundingBox().overlaps(collidedWall.getBoundingBox());
+        if (stillHasCollision) {
+            System.out.println("Direction: " + direction);
+            System.out.println("MoveY: " + moveY);
+            System.out.println("Player Rectangle: " + player.getBoundingBox().getX() + " " + player.getBoundingBox().getY() + " " + player.getBoundingBox().getWidth() + " " + player.getBoundingBox().getHeight());
+            System.out.println("Wall Rectangle: " + collidedWall.getBoundingBox().getX() + " " + collidedWall.getBoundingBox().getY() + " " + collidedWall.getBoundingBox().getWidth() + " " + collidedWall.getBoundingBox().getHeight());
+        }
         player.getBoundingBox().setY(player.getBoundingBox().getY() - moveY);
         player.getBoundingBox().setX(player.getBoundingBox().getX() - moveX);
         if (stillHasCollision) {
             System.out.println("Still has collision");
             return false;
         }
-        return movePlayer(moveX, moveY, direction);
+        return true;
     }
 
     protected Viewport getCamera() {
