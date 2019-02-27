@@ -3,6 +3,7 @@ package randovania.model;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import randovania.control.GameController;
+import randovania.model.objects.World;
 
 public class Viewport extends OrthographicCamera {
     //Camera is pointing at the center of the screen. Basis is the offset to help with wall math
@@ -41,8 +42,8 @@ public class Viewport extends OrthographicCamera {
     }
 
     public void moveRight(float distance) {
-        if((position.x + getWidth() + distance - BASIS_X) >  Map.MAP_MAX_X)
-            position.x = Map.MAP_MAX_X - getWidth() + BASIS_X;
+        if((position.x + getWidth() + distance - BASIS_X) >  World.MAP_MAX_X)
+            position.x = World.MAP_MAX_X - getWidth() + BASIS_X;
         else
             position.x = position.x + distance;
     }
@@ -55,8 +56,8 @@ public class Viewport extends OrthographicCamera {
     }
 
     public void moveUp(float distance) {
-        if((position.y + getHeight() + distance - BASIS_Y) >  Map.MAP_MAX_Y)
-            position.y = Map.MAP_MAX_Y - getHeight() + BASIS_Y;
+        if((position.y + getHeight() + distance - BASIS_Y) >  World.MAP_MAX_Y)
+            position.y = World.MAP_MAX_Y - getHeight() + BASIS_Y;
         else
             position.y = position.y + distance;
     }

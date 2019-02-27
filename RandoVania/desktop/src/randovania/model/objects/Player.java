@@ -1,4 +1,4 @@
-package randovania.model;
+package randovania.model.objects;
 
 
 import com.badlogic.gdx.graphics.Texture;
@@ -6,10 +6,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import randovania.control.GameController;
+import randovania.model.objects.GameObject;
 import randovania.view.Animation;
 import randovania.view.graphics.Assets;
 
-public class Player {
+public class Player extends GameObject {
     public static float START_X = 180;
     public static float START_Y = 63;
 
@@ -79,9 +80,5 @@ public class Player {
 
     public void disposeTextures() {
         playerTexture.dispose();
-    }
-
-    public Texture getTexture() {
-        return playerTexture;
     }
 }

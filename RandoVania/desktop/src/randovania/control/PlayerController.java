@@ -1,8 +1,8 @@
 package randovania.control;
 
-import randovania.model.Player;
+import randovania.model.objects.Player;
 import randovania.model.Viewport;
-import randovania.model.Wall;
+import randovania.model.objects.Wall;
 import randovania.utilities.Utilities;
 
 public class PlayerController {

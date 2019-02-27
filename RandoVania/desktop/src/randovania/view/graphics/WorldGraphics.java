@@ -39,7 +39,7 @@ public class WorldGraphics extends ScreenAdapter {
 //		Gdx.gl.glClearColor(1, 0, 0, 1);
 //		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		getBatch().begin();
-		getGameController().getGameMap().paintComponent(getBatch(), 0, 0);
+		getGameController().getGameWorld().paintComponent(getBatch(), 0, 0);
 		getGameController().getPlayer().paintComponent(getBatch(), 0, 0, delta);
 		getBatch().end();
 	}

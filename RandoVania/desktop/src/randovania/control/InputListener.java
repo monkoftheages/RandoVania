@@ -1,5 +1,6 @@
 package randovania.control;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector3;
@@ -13,11 +14,22 @@ public class InputListener implements InputProcessor {
     public static int LEFT_ALT = 29;
     public static int UP_ALT = 51;
     public static int DOWN_ALT = 47;
+    //Spacebar
     public static int JUMP = 62;
+    //G
     public static int GRAVITY = 35;
+    //+
     public static int ZOOM_IN = 70;
+    //-
     public static int ZOOM_OUT = 69;
+    //P
     public static int PRINT_WALLS = 44;
+    //N
+    public static int NEW_WALL = 42;
+    //M
+    public static int DELETE_WALL = 41;
+    //V
+    public static int HIDE_SHOW_WALLS = 50;
 
 
     protected GameController controller;
@@ -48,6 +60,12 @@ public class InputListener implements InputProcessor {
             keyPressedZoomOut();
         else if (keyCode == PRINT_WALLS)
             keyPressedPrintWalls();
+        else if (keyCode == NEW_WALL)
+            createNewWall();
+        else if (keyCode == DELETE_WALL)
+            deleteWall();
+        else if (keyCode == HIDE_SHOW_WALLS)
+            hideShowWalls();
         return false;
     }
 
@@ -69,20 +87,11 @@ public class InputListener implements InputProcessor {
         return false;
     }
 
-    protected float startX, startY;
-
     @Override
     public boolean touchDown(int x, int y, int pointer, int button) {
         Vector3 v = new Vector3(x, y, 0);
         controller.getCamera().unproject(v);
-        System.out.println("Mouse pressed: (" + (v.x) + ", " + (v.y) + ")");
-        if (button == Input.Buttons.RIGHT)
-            createWall(v.x, v.y);
-        else if (button == Input.Buttons.LEFT) {
-            startX = v.x;
-            startY = v.y;
-            holdWall(v.x, v.y);
-        }
+        mousePressed(v.x, v.y, pointer, button);
         return false;
     }
 
@@ -90,16 +99,7 @@ public class InputListener implements InputProcessor {
     public boolean touchUp(int x, int y, int pointer, int button) {
         Vector3 v = new Vector3(x, y, 0);
         controller.getCamera().unproject(v);
-        float width = Math.abs(startX - v.x);
-        float height = Math.abs(startY - v.y);
-        if (startX > v.x)
-            startX = v.x;
-        if (startY > v.y)
-            startY = v.y;
-        System.out.println("Mouse released: (" + startX + ", " + startY + ", " + width + ", " + height + ")");
-        if (button == Input.Buttons.LEFT)
-            unholdWall();
-
+        mouseReleased(v.x, v.y, pointer, button);
         return false;
     }
 
@@ -107,11 +107,7 @@ public class InputListener implements InputProcessor {
     public boolean touchDragged(int x, int y, int i2) {
         Vector3 v = new Vector3(x, y, 0);
         controller.getCamera().unproject(v);
-        float width = Math.abs(startX - v.x);
-        float height = Math.abs(startY - v.y);
-        moveWall(v.x - startX, v.y - startY);
-        startX += v.x - startX;
-        startY += v.y - startY;
+        mouseDragged(v.x, v.y);
         return false;
     }
 
@@ -124,6 +120,14 @@ public class InputListener implements InputProcessor {
     public boolean scrolled(int i) {
         return false;
     }
+
+    protected void keyPressedGravity() {
+        controller.toggleGravity();
+    }
+
+    /*
+     * Player control functions
+     */
 
     protected void keyPressedRight() {
         controller.getPlayerController().startMovingRight();
@@ -145,10 +149,6 @@ public class InputListener implements InputProcessor {
         controller.getPlayerController().jump();
     }
 
-    protected void keyPressedGravity() {
-        controller.toggleGravity();
-    }
-
     protected void keyReleasedUp() {
         controller.getPlayerController().stopMovingUp();
     }
@@ -165,31 +165,47 @@ public class InputListener implements InputProcessor {
         controller.getPlayerController().stopMovingRight();
     }
 
-    protected void createWall(float x, float y) {
-        controller.createWall(x, y);
-    }
-
-    protected void unholdWall() {
-        controller.unholdWall();
-    }
-
-    protected void holdWall(float x, float y) {
-        controller.holdWall(x, y);
-    }
-
-    protected void moveWall(float x, float y) {
-        controller.moveWall(x, y);
-    }
+    /*
+     * Level Editor Functions
+     */
 
     protected void keyPressedZoomIn() {
-        controller.zoomIn();
+        controller.getLevelEditorController().zoomIn();
     }
 
     protected void keyPressedZoomOut() {
-        controller.zoomOut();
+        controller.getLevelEditorController().zoomOut();
     }
 
     protected void keyPressedPrintWalls() {
-        controller.printWallInfo();
+        controller.getLevelEditorController().printWallInfo();
+    }
+
+    protected void mousePressed(float x, float y, int pointer, int button) {
+        controller.getLevelEditorController().mousePressed(x, y, pointer, button);
+    }
+
+    protected void mouseReleased(float x, float y, int pointer, int button) {
+        controller.getLevelEditorController().mouseReleased(x, y, pointer, button);
+    }
+
+    protected void mouseDragged(float x, float y) {
+        controller.getLevelEditorController().mouseDragged(x, y);
+    }
+
+    protected void createNewWall() {
+        Vector3 v = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        controller.getCamera().unproject(v);
+        controller.getLevelEditorController().createWall(v.x, v.y);
+    }
+
+    protected void deleteWall() {
+        Vector3 v = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        controller.getCamera().unproject(v);
+        controller.getLevelEditorController().deleteWall(v.x, v.y);
+    }
+
+    protected void hideShowWalls() {
+        controller.getLevelEditorController().hideShowWalls();
     }
 }
