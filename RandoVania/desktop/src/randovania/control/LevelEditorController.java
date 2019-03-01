@@ -118,7 +118,7 @@ public class LevelEditorController {
     protected void mousePressed(float x, float y, int pointer, int button) {
         if (!GameController.DEBUG_MODE)
             return;
-//        System.out.println("Mouse pressed: (" + (x) + ", " + (y) + ")");
+        System.out.println("Mouse pressed: (" + (x) + ", " + (y) + ")");
         if (button == Input.Buttons.RIGHT)
             createWall(x, y);
         else if (button == Input.Buttons.LEFT) {
@@ -154,5 +154,22 @@ public class LevelEditorController {
         if (!GameController.DEBUG_MODE)
             return;
         GameController.SHOW_WALLS = !GameController.SHOW_WALLS;
+    }
+
+    public static boolean DO_FADE = false;
+    public void testScript1() {
+        if (!GameController.DEBUG_MODE)
+            return;
+//        DO_FADE = true;
+//        gameController.getFadeScreen().increaseFade(.01f);
+        gameController.getFadeScreen().fadeOut();
+    }
+
+    public void testScript2() {
+        if (!GameController.DEBUG_MODE)
+            return;
+//        gameController.getFadeScreen().decreaseFade(.01f);
+//        DO_FADE = true;
+        gameController.getFadeScreen().fadeIn();
     }
 }

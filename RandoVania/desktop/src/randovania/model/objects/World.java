@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import randovania.model.RoomData;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class World extends GameObject {
     public static int MAP_MAX_X = 2000;
@@ -14,18 +15,33 @@ public class World extends GameObject {
     protected Room currentRoom;
     protected Room nextRoom;
 
+    protected ArrayList<Room> rooms;
 
     public World() {
         roomData = new RoomData();
-        currentRoom = new Room(roomData.roomDetails[0]);
-        nextRoom = new Room(roomData.roomDetails[1]);
+        rooms = new ArrayList<Room>();
+        rooms.add(new Room(roomData.roomDetails[0]));
+        rooms.add(new Room(roomData.roomDetails[1]));
+
+        currentRoom = rooms.get(0);
+        nextRoom = rooms.get(1);
         setCurrentRoom(currentRoom);
+    }
+
+    public void setCurrentRoom(int roomNumber) {
+        setCurrentRoom(rooms.get(roomNumber));
     }
 
     public void setCurrentRoom(Room room) {
         currentRoom = room;
         MAP_MAX_X = currentRoom.width;
         MAP_MAX_Y = currentRoom.height;
+    }
+
+    public void tempSwapRooms() {
+        Room temp = nextRoom;
+        nextRoom = currentRoom;
+        setCurrentRoom(temp);
     }
 
     public ArrayList<Wall> getWalls() {

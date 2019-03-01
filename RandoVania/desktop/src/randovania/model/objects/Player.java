@@ -14,6 +14,9 @@ public class Player extends GameObject {
     public static float START_X = 180;
     public static float START_Y = 63;
 
+    public static float rectOffsetX = 5;
+    public static float rectOffsetY = 1;
+
     protected float x, y, width, height;
     protected Rectangle playerRectangle;
     protected Texture playerTexture;
@@ -51,7 +54,13 @@ public class Player extends GameObject {
     public void movePlayer(float distX, float distY) {
         x = x + distX;
         y = y + distY;
+    }
 
+    public void setLocationAndRect(float xLoc, float yLoc) {
+        x = xLoc;
+        y = yLoc;
+        playerRectangle.setX(x + rectOffsetX);
+        playerRectangle.setY(y + rectOffsetY);
     }
 
     public Rectangle getBoundingBox() {
@@ -75,7 +84,7 @@ public class Player extends GameObject {
         width = playerTexture.getWidth();
         height = playerTexture.getHeight();
         //shifted bounding box to make player contact ground/wall (due to whitespace on the graphics)
-        playerRectangle = new Rectangle(x+1 + 4, y+1, width-6 - 8, height-8);
+        playerRectangle = new Rectangle(x+rectOffsetX, y+rectOffsetY, width-6 - 8, height-8);
     }
 
     public void disposeTextures() {

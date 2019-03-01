@@ -1,10 +1,12 @@
 package randovania.control;
 
 import com.badlogic.gdx.math.Rectangle;
+import randovania.model.objects.TransitionWall;
 import randovania.model.objects.World;
 import randovania.model.objects.Player;
 import randovania.model.Viewport;
 import randovania.model.objects.Wall;
+import randovania.view.graphics.FadeScreen;
 import randovania.view.graphics.WorldGraphics;
 
 
@@ -21,6 +23,7 @@ public class GameController {
     protected World gameWorld;
     protected PlayerController playerController;
     protected LevelEditorController levelEditorController;
+    protected FadeScreen fadeScreen;
 
     public GameController(GameApplication parent) {
         gameWorld = new World();
@@ -29,9 +32,12 @@ public class GameController {
         if (gravityOn)
             playerController.moveDown = true;
         this.parent = parent;
+        fadeScreen = new FadeScreen(this);
     }
 
     public void update(float delta) {
+        if(transitioning)
+            return;
         playerController.move(delta);
     }
 
@@ -61,6 +67,31 @@ public class GameController {
         return null;
     }
 
+    protected TransitionWall transitioningWall;
+    protected boolean transitioning = false;
+    protected boolean fading = false;
+    public void handleTransition(TransitionWall wall) {
+        if(fading)
+            return;
+        fading = true;
+        System.out.println("handle transition");
+        transitioning = true;
+        transitioningWall = wall;
+        getFadeScreen().fadeOut();
+    }
+
+    public void finishedFadingIn() {
+        fading = false;
+    }
+
+    public void finishedFadingOut() {
+        gameWorld.setCurrentRoom(transitioningWall.connectingRoom);
+        getPlayer().setLocationAndRect(transitioningWall.playerStartX, transitioningWall.playerStartY);
+        getCamera().setLocation(transitioningWall.playerStartX, transitioningWall.playerStartY);
+        getFadeScreen().fadeIn();
+        transitioning = false;
+    }
+
     protected WorldGraphics getGraphics() {
         return parent.getBoardGraphics();
     }
@@ -76,11 +107,13 @@ public class GameController {
     public void createTextures() {
         gameWorld.createTextures();
         playerController.createTextures();
+        fadeScreen.createTextures();
     }
 
     public void disposeTextures() {
         gameWorld.disposeTextures();
         playerController.disposeTextures();
+        fadeScreen.disposeTextures();
     }
 
     public PlayerController getPlayerController() {
@@ -89,6 +122,10 @@ public class GameController {
 
     public LevelEditorController getLevelEditorController() {
         return levelEditorController;
+    }
+
+    public FadeScreen getFadeScreen() {
+        return fadeScreen;
     }
 
 }

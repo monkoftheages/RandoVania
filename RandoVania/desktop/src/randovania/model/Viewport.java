@@ -61,4 +61,21 @@ public class Viewport extends OrthographicCamera {
         else
             position.y = position.y + distance;
     }
+
+    public void setLocation(float x, float y) {
+        position.x = x;
+        position.y = y;
+        checkBounds();
+    }
+
+    protected void checkBounds() {
+        if((position.y + getHeight() - BASIS_Y) >  World.MAP_MAX_Y)
+            position.y = World.MAP_MAX_Y - getHeight() + BASIS_Y;
+        if((position.y - BASIS_Y) <  0)
+            position.y = BASIS_Y;
+        if((position.x - BASIS_X) <  0)
+            position.x = BASIS_X;
+        if((position.x + getWidth() - BASIS_X) >  World.MAP_MAX_X)
+            position.x = World.MAP_MAX_X - getWidth() + BASIS_X;
+    }
 }

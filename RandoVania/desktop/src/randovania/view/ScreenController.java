@@ -1,7 +1,13 @@
 package randovania.view;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.PolygonSprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import randovania.control.GameApplication;
 import randovania.control.GameController;
 import randovania.model.Viewport;
@@ -11,6 +17,8 @@ public class ScreenController extends Game {
     public SpriteBatch batch;
     protected GameApplication parent;
     protected Viewport camera;
+    public ShapeRenderer shapeRenderer;
+
 
     public ScreenController(GameApplication parent) {
         this.parent = parent;
@@ -25,6 +33,7 @@ public class ScreenController extends Game {
         camera.zoom = GameController.ZOOM_LEVEL;
         camera.position.set(camera.getWidth()/2, camera.getHeight()/2, 0);
         camera.update();
+        shapeRenderer = new ShapeRenderer();
     }
 
     @Override
@@ -35,6 +44,7 @@ public class ScreenController extends Game {
     @Override
    	public void dispose () {
    		batch.dispose();
+        shapeRenderer.dispose();
         getGameController().disposeTextures();
    	}
 

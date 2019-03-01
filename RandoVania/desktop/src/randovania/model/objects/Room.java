@@ -5,7 +5,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import randovania.control.GameController;
 import randovania.model.RoomData;
+import randovania.utilities.Utilities;
 
+import java.awt.*;
+import java.io.File;
 import java.util.ArrayList;
 
 public class Room extends GameObject {
@@ -16,11 +19,14 @@ public class Room extends GameObject {
 
     public Room(RoomData.RoomDetails roomDetails) {
         this.roomDetails = roomDetails;
-        width = roomDetails.width;
-        height = roomDetails.height;
+        Dimension x = Utilities.getImageDimension(new File(roomDetails.fileName));
+        width = x.width;
+        height = x.height;
         walls = new ArrayList<Wall>();
         for(Rectangle r : roomDetails.walls)
             createWall(r);
+        for(float[] twData: roomDetails.transitionWalls)
+            createTransitionWall(twData);
     }
 
     protected void createOutsideWalls() {
@@ -65,6 +71,11 @@ public class Room extends GameObject {
 
     public void createWall(Rectangle r) {
         Wall w = new Wall(r.x, r.y, r.width, r.height);
+        walls.add(w);
+    }
+
+    public void createTransitionWall(float[] twData) {
+        TransitionWall w = new TransitionWall(twData);
         walls.add(w);
     }
 

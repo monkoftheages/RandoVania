@@ -30,6 +30,8 @@ public class InputListener implements InputProcessor {
     public static int DELETE_WALL = 41;
     //V
     public static int HIDE_SHOW_WALLS = 50;
+    public static int TEST_SCRIPT1 = Input.Keys.O;
+    public static int TEST_SCRIPT2 = Input.Keys.I;
 
 
     protected GameController controller;
@@ -66,6 +68,10 @@ public class InputListener implements InputProcessor {
             deleteWall();
         else if (keyCode == HIDE_SHOW_WALLS)
             hideShowWalls();
+        else if (keyCode == TEST_SCRIPT1)
+            testScript1();
+        else if (keyCode == TEST_SCRIPT2)
+            testScript2();
         return false;
     }
 
@@ -207,5 +213,13 @@ public class InputListener implements InputProcessor {
 
     protected void hideShowWalls() {
         controller.getLevelEditorController().hideShowWalls();
+    }
+
+    protected void testScript1() {
+        controller.getLevelEditorController().testScript1();
+    }
+
+    protected void testScript2() {
+        controller.getLevelEditorController().testScript2();
     }
 }

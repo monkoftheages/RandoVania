@@ -2,6 +2,7 @@ package randovania.control;
 
 import randovania.model.objects.Player;
 import randovania.model.Viewport;
+import randovania.model.objects.TransitionWall;
 import randovania.model.objects.Wall;
 import randovania.utilities.Utilities;
 
@@ -29,7 +30,7 @@ public class PlayerController {
     //    protected static final int JUMP_SPEED = 1000;
     public static final int JUMP_TIME = 200;
     public static final float MAX_JUMP_HEIGHT = (float) .22;
-    public static final int PLAYER_CENTEREDNESS = 1;
+    public static final int PLAYER_CENTEREDNESS = 20;
 //    public static final int PLAYER_CENTEREDNESS = 1;
 
     protected float totalJumpHeight = 0;
@@ -179,6 +180,12 @@ public class PlayerController {
         player.getBoundingBox().setY(player.getBoundingBox().getY() + distY);
         Wall collidedWall = gameController.hasWallCollision(player.getBoundingBox());
         if (collidedWall != null) {
+            if(collidedWall instanceof TransitionWall) {
+                player.getBoundingBox().setX(player.getBoundingBox().getX() - distX);
+                player.getBoundingBox().setY(player.getBoundingBox().getY() - distY);
+                gameController.handleTransition((TransitionWall) collidedWall);
+                return false;
+            }
             return movePlayerAfterCollision(distX, distY, direction, collidedWall);
         } else {
             //disallow jumps while falling
