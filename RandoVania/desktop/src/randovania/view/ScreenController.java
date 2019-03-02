@@ -34,6 +34,7 @@ public class ScreenController extends Game {
         camera.position.set(camera.getWidth()/2, camera.getHeight()/2, 0);
         camera.update();
         shapeRenderer = new ShapeRenderer();
+        getCamera().setLocation(getGameController().getPlayer().getBoundingBox().getX(), getGameController().getPlayer().getBoundingBox().getY());
     }
 
     @Override

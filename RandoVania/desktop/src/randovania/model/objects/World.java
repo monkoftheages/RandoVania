@@ -38,12 +38,6 @@ public class World extends GameObject {
         MAP_MAX_Y = currentRoom.height;
     }
 
-    public void tempSwapRooms() {
-        Room temp = nextRoom;
-        nextRoom = currentRoom;
-        setCurrentRoom(temp);
-    }
-
     public ArrayList<Wall> getWalls() {
         return currentRoom.getWalls();
     }

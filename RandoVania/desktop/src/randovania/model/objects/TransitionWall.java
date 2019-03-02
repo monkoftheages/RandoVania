@@ -46,7 +46,8 @@ public class TransitionWall extends Wall {
     }
 
     public void printInfo() {
-        System.out.println("createWall(" + rect.x + ", " + rect.y + ", " + rect.width + ", " + rect.height + "),");
+        System.out.println("Transition: {" + rect.x + "f, " + rect.y + "f, " + rect.width + "f, " + rect.height + "f, "
+                + playerStartX + ", " + playerStartY + ", " + connectingRoom + "}" + "},");
     }
 
     public void paintComponent(SpriteBatch batch) {

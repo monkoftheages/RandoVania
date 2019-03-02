@@ -14,12 +14,15 @@ public class GameController {
     public static boolean DEBUG_MODE = true;
     public static boolean SHOW_WALLS = false;
     public static float ZOOM_LEVEL = (float) .4;
-
     public static final float START_X = 0;
     public static final float START_Y = 0;
 
-    protected GameApplication parent;
+    protected boolean transitioning = false;
+    protected boolean fading = false;
     protected boolean gravityOn = true;
+
+    protected GameApplication parent;
+    protected TransitionWall transitioningWall;
     protected World gameWorld;
     protected PlayerController playerController;
     protected LevelEditorController levelEditorController;
@@ -67,14 +70,11 @@ public class GameController {
         return null;
     }
 
-    protected TransitionWall transitioningWall;
-    protected boolean transitioning = false;
-    protected boolean fading = false;
     public void handleTransition(TransitionWall wall) {
         if(fading)
             return;
         fading = true;
-        System.out.println("handle transition");
+        getPlayerController().handleTransition();
         transitioning = true;
         transitioningWall = wall;
         getFadeScreen().fadeOut();
@@ -90,6 +90,10 @@ public class GameController {
         getCamera().setLocation(transitioningWall.playerStartX, transitioningWall.playerStartY);
         getFadeScreen().fadeIn();
         transitioning = false;
+    }
+
+    public boolean isTransitioning() {
+        return transitioning;
     }
 
     protected WorldGraphics getGraphics() {

@@ -30,7 +30,7 @@ public class PlayerController {
     //    protected static final int JUMP_SPEED = 1000;
     public static final int JUMP_TIME = 200;
     public static final float MAX_JUMP_HEIGHT = (float) .22;
-    public static final int PLAYER_CENTEREDNESS = 20;
+    public static final int PLAYER_CENTEREDNESS = 1;
 //    public static final int PLAYER_CENTEREDNESS = 1;
 
     protected float totalJumpHeight = 0;
@@ -41,6 +41,8 @@ public class PlayerController {
     }
 
     public void startMovingUp() {
+        if(gameController.isTransitioning())
+            return;
         if (gameController.isGravityOn())
             return;
         if (moveDown)
@@ -49,6 +51,8 @@ public class PlayerController {
     }
 
     public void startMovingDown() {
+        if(gameController.isTransitioning())
+            return;
         if (gameController.isGravityOn())
             return;
         if (moveUp)
@@ -57,6 +61,8 @@ public class PlayerController {
     }
 
     public void startMovingLeft() {
+        if(gameController.isTransitioning())
+            return;
         moveRight = false;
         player.setFacingLeft(true);
         player.setMoving(true);
@@ -64,6 +70,8 @@ public class PlayerController {
     }
 
     public void startMovingRight() {
+        if(gameController.isTransitioning())
+            return;
         moveLeft = false;
         player.setFacingLeft(false);
         player.setMoving(true);
@@ -121,8 +129,7 @@ public class PlayerController {
             //Reached max height for jump,
             //need to verify and change to difference to guarantee a specific height
             delta = MAX_JUMP_HEIGHT - totalJumpHeight;
-            jumpUp = false;
-            moveDown = true;
+            stopJumping();
         } else {
             totalJumpHeight += delta;
         }
@@ -189,8 +196,11 @@ public class PlayerController {
             return movePlayerAfterCollision(distX, distY, direction, collidedWall);
         } else {
             //disallow jumps while falling
-            if (direction == MOVING_DOWN)
-                contactingGround = false;
+            if (direction == MOVING_DOWN) {
+                //check if ground is close to player sprite, if so, dont disallow jumping
+                if(!isGroundCloseToPlayer())
+                    contactingGround = false;
+            }
             player.movePlayer(distX, distY);
             return true;
         }
@@ -217,10 +227,8 @@ public class PlayerController {
                 break;
             case MOVING_UP:
                 //Moving up, cancel jump when colliding with a ceiling
-                if (jumpUp) {
-                    jumpUp = false;
-                    moveDown = true;
-                }
+                if (jumpUp)
+                    stopJumping();
                 playerEdge = player.getBoundingBox().getY() + player.getBoundingBox().getHeight();
                 wallEdge = collidedWall.getBoundingBox().getY();
                 moveY = wallEdge - playerEdge - Utilities.EQUALITY_THRESHOLD_SMALL;
@@ -279,6 +287,25 @@ public class PlayerController {
             return false;
         }
         return true;
+    }
+
+    protected boolean isGroundCloseToPlayer() {
+        int closeDistance = 10;
+        boolean close = false;
+        player.getBoundingBox().setY(player.getBoundingBox().getY() - closeDistance);
+        if(gameController.hasWallCollision(player.getBoundingBox()) != null)
+            close = true;
+        player.getBoundingBox().setY(player.getBoundingBox().getY() + closeDistance);
+        return close;
+    }
+
+    public void handleTransition() {
+        stopJumping();
+    }
+
+    public void stopJumping() {
+        jumpUp = false;
+        moveDown = true;
     }
 
     protected Viewport getCamera() {
